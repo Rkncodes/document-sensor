@@ -123,10 +123,4 @@ MIT
 
 ---
 
-If you want next:
 
-* **User upload history**
-* **Password show/hide toggle**
-* **Vercel deploy checklist**
-
-Say one thing only and we do it cleanly.
