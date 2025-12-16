@@ -1,0 +1,40 @@
+{
+  "name": "document-sensitive-word-censor",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:next": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint && tsc --noEmit",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^1.6.0",
+    "@prisma/client": "^6.19.1",
+    "bcryptjs": "^2.4.3",
+    "formidable": "^3.5.1",
+    "mammoth": "^1.8.0",
+    "next": "14.2.13",
+    "next-auth": "^4.24.5",
+    "pdf-parse": "^1.1.1",
+    "prisma": "^6.19.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/formidable": "^3.4.6",
+    "@types/node": "^20.14.9",
+    "@types/pdf-parse": "^1.0.5",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vercel/node": "^3.2.24",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
+    "vercel": "^33.2.0"
+  }
+}
