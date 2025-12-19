@@ -2,6 +2,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import SignOutButton from "./SignOutButton";
 
 interface LayoutProps {
@@ -23,6 +24,12 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             {session && (
               <div className="flex items-center gap-4">
+                <Link
+                  href="/history"
+                  className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+                >
+                  History
+                </Link>
                 <span className="text-sm text-gray-700">
                   {session.user?.name || session.user?.email}
                 </span>

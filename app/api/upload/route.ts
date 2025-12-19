@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { CensorResult, CensoredWord } from '@/lib/types';
 
 const SENSITIVE_WORDS = [
@@ -112,6 +115,24 @@ export async function POST(request: NextRequest) {
 
     const result = censorText(text);
     result.fileName = file.name;
+
+    // Save to database if user is logged in
+    const session = await getServerSession(authOptions);
+    if (session?.user?.id) {
+      const censoredCount = result.censoredWords.reduce((sum, word) => sum + word.positions.length, 0);
+      try {
+        await prisma.documentUpload.create({
+          data: {
+            userId: session.user.id,
+            fileName: file.name,
+            censoredCount,
+          },
+        });
+      } catch (dbError) {
+        console.error('Failed to save upload history:', dbError);
+        // Continue even if DB write fails
+      }
+    }
 
     return NextResponse.json({
       success: true,

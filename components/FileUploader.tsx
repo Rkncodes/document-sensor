@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { UploadResponse } from '@/lib/types';
 
 export default function FileUploader() {
@@ -10,6 +11,7 @@ export default function FileUploader() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const acceptedTypes = ['.pdf', '.docx', '.txt'];
   const acceptedMimeTypes = [
@@ -195,13 +197,23 @@ export default function FileUploader() {
           </div>
         )}
 
-        <button
-          onClick={handleUpload}
-          disabled={!file || isUploading}
-          className="w-full mt-6 px-6 py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-900 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
-        >
-          {isUploading ? 'Processing...' : 'Upload and Censor'}
-        </button>
+        <div className={`mt-6 ${session ? 'flex gap-3' : ''}`}>
+          <button
+            onClick={handleUpload}
+            disabled={!file || isUploading}
+            className={`${session ? 'flex-1' : 'w-full'} px-6 py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-900 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors`}
+          >
+            {isUploading ? 'Processing...' : 'Upload and Censor'}
+          </button>
+          {session && (
+            <button
+              onClick={() => router.push('/history')}
+              className="px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
+            >
+              History
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
