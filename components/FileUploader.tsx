@@ -206,12 +206,20 @@ export default function FileUploader() {
             {isUploading ? 'Processing...' : 'Upload and Censor'}
           </button>
           {session && (
-            <button
-              onClick={() => router.push('/history')}
-              className="px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
-            >
-              History
-            </button>
+            <>
+              <button
+                onClick={() => router.push('/history')}
+                className="px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
+              >
+                History
+              </button>
+              <button
+                onClick={() => router.push('/analytics')}
+                className="px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
+              >
+                Analytics
+              </button>
+            </>
           )}
         </div>
       </div>
