@@ -30,9 +30,20 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   History
                 </Link>
-                <span className="text-sm text-gray-700">
-                  {session.user?.name || session.user?.email}
-                </span>
+                {session.user?.email === 'admin123@gmail.com' && (
+                  <Link
+                    href="/admin"
+                    className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+                  >
+                    Admin
+                  </Link>
+                )}
+                {session.user?.email !== "admin123@gmail.com" && (
+                  <span className="text-sm text-gray-700">
+                    {session.user?.name || session.user?.email}
+                  </span>
+                )}
+
                 <SignOutButton />
               </div>
             )}
