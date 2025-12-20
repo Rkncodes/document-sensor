@@ -1,82 +1,61 @@
-Understood. **No new sections, no restructuring, no extra content.**
-Only **minimal updates inside what you already wrote**.
-
-Here is your **same content**, with **only necessary lines updated** 👇
-
----
-
 ````md
 # Quick Start Guide
 
 ## Installation & Running
 
 ```bash
-# Install dependencies
 npm install
-
-# Run development server
 npm run dev
 ````
 
 Visit [http://localhost:3000](http://localhost:3000)
 
-> Ensure a `.env` file is present with required environment variables before running locally.
+## Authentication
 
----
+1. Register using email and password(CREATE A NEW ACCOUNT IF NOT REGISTERED EARLIER) **or**
+2. Sign in using Google OAuth
+3. After login, you are redirected to the home page
 
-## Usage
+## Upload & Censor
 
-1. Sign in or create a new account
-2. Upload a document (PDF, DOCX, or TXT) by dragging it into the upload area or clicking "Browse Files"
-3. Click "Upload and Censor" to process the document
-4. View the results showing original and censored text side-by-side
-5. Click "Download" to save the censored text as a `.txt` file
+1. Upload a document (PDF, DOCX, or TXT)
+2. Click **Upload and Censor**
+3. View original and censored text side-by-side
+4. Download the censored result as a `.txt` file
 
-> Note:
->
-> * Users who signed up with Google must use **Sign in with Google**
-> * Email & password login works only for accounts created via the Register page
+## Navigation
 
----
+* A hamburger menu is available after login
+* Menu options:
 
-## Deployment
+  * Upload
+  * History
+  * Admin (admins only)
+  * Logout
 
-### Vercel (Recommended)
+## User History
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+* Each upload is saved to the logged-in user’s account
+* History includes:
 
-# Deploy
-vercel
+  * File name
+  * Upload timestamp
+* Users can view **only their own** upload history
+
+## Admin Access
+
+* Admin users can access the admin dashboard
+* Admins can:
+
+  * View all users
+  * View all uploads
+  * See basic usage analytics
+* Admin access is controlled via role-based authorization
+
+## Logout
+
+* Logout is available directly on the home page
+* Logging out clears the active session immediately
+
 ```
-
-Or push to GitHub and connect your repository at [https://vercel.com](https://vercel.com)
-
-> Set all environment variables in the Vercel dashboard before deployment.
-
----
-
-## Customizing Sensitive Words
-
-Edit `app/api/upload/route.ts` and modify the `SENSITIVE_WORDS` array:
-
-```ts
-const SENSITIVE_WORDS = [
-  "confidential",
-  "secret",
-  "password",
-  // Add your words here
-];
-```
-
----
-
-## File Format Support
-
-* **PDF**: Extracts text using pdf-parse
-* **DOCX**: Extracts text using mammoth
-* **TXT**: Native text file support
-
-Maximum file size: **10MB**
 
