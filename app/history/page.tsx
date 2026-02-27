@@ -1,22 +1,36 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
-import Layout from '@/components/Layout';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import Layout from "@/components/Layout";
+import AdminUploadsTable from "@/components/AdminUploadsTable";
 
 export default async function HistoryPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect('/login');
+    redirect("/login");
   }
 
+  const isAdmin = session.user.role === "ADMIN";
+
   const uploads = await prisma.documentUpload.findMany({
-    where: {
-      userId: session.user.id,
-    },
+    where: isAdmin
+      ? {}
+      : {
+          userId: session.user.id,
+        },
+    include: isAdmin
+      ? {
+          user: {
+            select: {
+              email: true,
+            },
+          },
+        }
+      : undefined,
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
   });
 
@@ -41,6 +55,8 @@ export default async function HistoryPage() {
                   Upload your first document to see it here.
                 </p>
               </div>
+            ) : isAdmin ? (
+              <AdminUploadsTable uploads={uploads as any} />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -84,4 +100,3 @@ export default async function HistoryPage() {
     </Layout>
   );
 }
-

@@ -10,21 +10,23 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isLoading = status === "loading";
+  const isAuthenticated = !!session;
+  const isAdmin = session?.user?.role === "ADMIN";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Top Navbar */}
+      {/* ===================== NAVBAR ===================== */}
       <nav className="bg-white shadow-sm">
         <div className="px-6">
           <div className="flex items-center h-16 gap-4">
-            {!isLoading && status === "authenticated" && (
+            {/* Menu Button */}
+            {isAuthenticated && (
               <button
                 onClick={() => setMenuOpen(true)}
-                className="p-2 rounded-md hover:bg-gray-100"
+                className="p-2 rounded-md hover:bg-gray-100 transition"
                 aria-label="Menu"
               >
                 <div className="space-y-1">
@@ -42,8 +44,8 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </nav>
 
-      {/* Sidebar */}
-      {!isLoading && status === "authenticated" && menuOpen && (
+      {/* ===================== SIDEBAR ===================== */}
+      {isAuthenticated && menuOpen && (
         <div className="fixed inset-0 z-50 flex">
           {/* Sidebar Panel */}
           <div className="w-96 bg-white h-full shadow-xl p-6 flex flex-col">
@@ -52,35 +54,37 @@ export default function Layout({ children }: LayoutProps) {
               <h2 className="text-xl font-semibold">Menu</h2>
               <button
                 onClick={() => setMenuOpen(false)}
-                className="text-2xl font-bold hover:text-gray-600"
+                className="text-2xl font-bold hover:text-gray-600 transition"
               >
                 ×
               </button>
             </div>
 
-            {/* Navigation */}
+            {/* Navigation Links */}
             <nav className="flex flex-col gap-5 text-lg font-medium">
               <Link href="/" onClick={() => setMenuOpen(false)}>
                 Home
               </Link>
+
               <Link href="/history" onClick={() => setMenuOpen(false)}>
                 History
               </Link>
+
               <Link href="/analytics" onClick={() => setMenuOpen(false)}>
                 Analytics
               </Link>
 
-              {session?.user?.email === "admin123@gmail.com" && (
+              {isAdmin && (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}>
                   Admin
                 </Link>
               )}
             </nav>
 
-            {/* Push About Dev down */}
+            {/* Spacer */}
             <div className="flex-grow" />
 
-            {/* About Developer */}
+            {/* Developer Section */}
             <div className="mb-6 pt-6 border-t border-gray-200 space-y-3">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                 About Developer
@@ -116,6 +120,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       )}
 
+      {/* ===================== MAIN CONTENT ===================== */}
       <main>{children}</main>
     </div>
   );

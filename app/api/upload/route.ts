@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { CensorResult, CensoredWord } from '@/lib/types';
 
+
 const SENSITIVE_WORDS = [
   'confidential',
   'secret',

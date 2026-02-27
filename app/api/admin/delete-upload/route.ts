@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { censorText } from '@/lib/redaction';
 
-const ADMIN_EMAIL = 'admin123@gmail.com';
 
 function isAdmin(session: any): boolean {
-  return session?.user?.email === ADMIN_EMAIL;
+  return session?.user?.role === 'ADMIN';
 }
 
 export async function DELETE(request: NextRequest) {
@@ -31,7 +31,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    await (prisma as any).documentUpload.delete({
+    await prisma.documentUpload.delete({
       where: {
         id: uploadId,
       },
@@ -46,4 +46,5 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
 
