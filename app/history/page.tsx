@@ -3,7 +3,6 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Layout from "@/components/Layout";
-import AdminUploadsTable from "@/components/AdminUploadsTable";
 
 export default async function HistoryPage() {
   const session = await getServerSession(authOptions);
@@ -18,16 +17,16 @@ export default async function HistoryPage() {
     where: isAdmin
       ? {}
       : {
-          userId: session.user.id,
-        },
+        userId: session.user.id,
+      },
     include: isAdmin
       ? {
-          user: {
-            select: {
-              email: true,
-            },
+        user: {
+          select: {
+            email: true,
           },
-        }
+        },
+      }
       : undefined,
     orderBy: {
       createdAt: "desc",
@@ -55,9 +54,7 @@ export default async function HistoryPage() {
                   Upload your first document to see it here.
                 </p>
               </div>
-            ) : isAdmin ? (
-              <AdminUploadsTable uploads={uploads as any} />
-            ) : (
+            ) : ( 
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>

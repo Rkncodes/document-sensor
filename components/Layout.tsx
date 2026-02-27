@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
             )}
 
             <h1 className="text-4xl font-bold text-gray-900">
-              Document Sensor
+              Document Redaction Engine
             </h1>
           </div>
         </div>
@@ -124,4 +124,4 @@ export default function Layout({ children }: LayoutProps) {
       <main>{children}</main>
     </div>
   );
-}
+} 

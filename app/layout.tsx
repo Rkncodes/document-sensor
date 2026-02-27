@@ -8,8 +8,8 @@ import AuthProvider from "@/components/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Document Sensor - Secure Document Processing",
-  description: "Upload and censor sensitive words in your documents",
+  title: "Document Redaction Engine",
+  description: "A modular PII detection and redaction engine supporting keyword, email, phone, and credit card detection with secure processing and audit history.",
 };
 
 export default function RootLayout({

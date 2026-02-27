@@ -8,10 +8,10 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Document Sensitive Word Censor
+            Document Redaction Engine
           </h1>
           <p className="text-lg text-gray-600">
-            Upload your documents and automatically censor sensitive information
+            Upload documents and automatically detect and redact sensitive data including emails, phone numbers, credit cards, and keywords.
           </p>
         </div>
 

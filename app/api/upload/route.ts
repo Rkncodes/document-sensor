@@ -2,33 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { CensorResult, CensoredWord } from '@/lib/types';
-
-
-const SENSITIVE_WORDS = [
-  'confidential',
-  'secret',
-  'password',
-  'ssn',
-  'credit card',
-  'private',
-  'classified',
-  'restricted',
-  'internal',
-  'proprietary',
-
-  // abuse / violence
-  'abuse',
-  'abusive',
-  'kill',
-  'killing',
-  'murder',
-  'murdered',
-  'violence',
-  'violent',
-  'assault',
-  'threat',
-];
+import { runRedaction } from "@/lib/redaction/engine";
 
 
 async function extractTextFromFile(file: File): Promise<string> {
@@ -65,34 +39,6 @@ async function extractTextFromFile(file: File): Promise<string> {
   throw new Error('Unsupported file type');
 }
 
-function censorText(text: string): CensorResult {
-  let censoredText = text;
-  const censoredWords: CensoredWord[] = [];
-
-  SENSITIVE_WORDS.forEach((word) => {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-    const matches = [...text.matchAll(regex)];
-
-    if (matches.length > 0) {
-      const positions = matches.map(match => match.index!);
-      censoredWords.push({
-        word,
-        positions,
-      });
-
-      const replacement = '*'.repeat(word.length);
-      censoredText = censoredText.replace(regex, replacement);
-    }
-  });
-
-  return {
-    originalText: text,
-    censoredText,
-    censoredWords,
-    fileName: '',
-  };
-}
-
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -114,7 +60,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = censorText(text);
+
+    const result = runRedaction(text);
     result.fileName = file.name;
 
     // Save to database if user is logged in
