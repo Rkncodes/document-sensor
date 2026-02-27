@@ -1,35 +1,46 @@
 ````md
-# Document Sensor
+# Document Redaction Engine
 
-A Next.js 14 application that allows authenticated users to upload documents (PDF, DOCX, TXT) and automatically censor sensitive words.
+A modular PII detection and redaction engine built with Next.js 14.  
+Authenticated users can upload documents (PDF, DOCX, TXT) and automatically detect and redact sensitive information.
+
+---
 
 ## Features
 
 * Email + password authentication
 * Google OAuth authentication
-* User registration and secure login
+* Role-based access control (USER / ADMIN)
 * Drag-and-drop document upload
 * PDF, DOCX, and TXT support
-* Automatic sensitive word detection and censoring
-* Side-by-side original vs censored text
-* Highlighted sensitive words
-* Download censored text as `.txt`
+* Modular redaction engine
+  * Keyword detection
+  * Email detection
+  * Phone number detection
+  * Credit card detection
+* Automatic detection and redaction of sensitive data
+* Side-by-side original vs redacted text
+* Highlighted detected entities
+* Download redacted text as `.txt`
 * Responsive UI with Tailwind CSS
 * User upload history (per account)
-* Basic usage analytics (uploads count)
-* Admin access for viewing all users and uploads
-* Hamburger menu navigation
-* Logout option available on home page
+* Basic usage analytics (upload count)
+* Admin dashboard for viewing all users and uploads
+* Secure session handling with JWT
+
+---
 
 ## Getting Started
 
-### Installation
+### 1. Installation
 
 ```bash
 npm install
 ````
 
-### Environment Variables
+---
+
+### 2. Environment Variables
 
 Create a `.env` file:
 
@@ -41,19 +52,29 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
-### Database Setup
+---
+
+### 3. Database Setup
 
 ```bash
 npx prisma migrate dev
 ```
 
-### Running Locally
+---
+
+### 4. Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Then open:
+
+```
+http://localhost:3000
+```
+
+---
 
 ## Project Structure
 
@@ -61,59 +82,94 @@ Open [http://localhost:3000](http://localhost:3000)
 ├── app/
 │   ├── api/
 │   │   ├── auth/
-│   │   │   └── [...nextauth]/route.ts   # NextAuth config
-│   │   ├── register/
-│   │   │   └── route.ts                 # User registration
+│   │   │   └── [...nextauth]/route.ts   # NextAuth configuration
 │   │   ├── upload/
-│   │   │   └── route.ts                 # Document processing
+│   │   │   └── route.ts                 # Document processing + redaction
 │   │   ├── history/
 │   │   │   └── route.ts                 # User upload history API
 │   │   └── admin/
 │   │       └── route.ts                 # Admin-only APIs
-│   ├── login/
-│   │   └── page.tsx                     # Login page
-│   ├── result/
-│   │   └── page.tsx                     # Results view
 │   ├── admin/
 │   │   └── page.tsx                     # Admin dashboard
+│   ├── history/
+│   │   └── page.tsx                     # User history view
 │   ├── layout.tsx
-│   └── page.tsx                         # Home page with logout + menu
+│   └── page.tsx                         # Home page
 ├── components/
 │   ├── FileUploader.tsx
 │   ├── Layout.tsx
-│   └── HamburgerMenu.tsx
+│   └── Navbar.tsx
 ├── lib/
 │   ├── auth.ts                          # Auth options + role handling
-│   ├── prisma.ts                       # Prisma client
-│   └── types.ts
+│   ├── prisma.ts                        # Prisma client
+│   └── redaction/
+│       ├── engine.ts                    # Redaction engine core
+│       ├── detectors/                   # Modular detector implementations
+│       ├── normalize.ts
+│       └── types.ts
 ├── prisma/
-│   └── schema.prisma                   # User, Upload, Admin role models
+│   └── schema.prisma                    # User, Session, Upload models
 └── package.json
 ```
 
-## Authentication Behavior
+---
 
-* **Google users** must sign in using Google
-* **Email/password login** works only for users registered via `/register`
-* Passwords are securely hashed using bcrypt
-* Sessions are managed with NextAuth + JWT
-* Admin users are determined via role field in database
+## Redaction Engine Architecture
+
+The redaction system follows a modular detector-based architecture.
+
+Each detector:
+
+* Implements a consistent interface
+* Scans extracted document text
+* Returns structured match results
+* Is aggregated by the central engine
+
+Supported detection types:
+
+* Keywords (configurable list)
+* Email addresses
+* Phone numbers
+* Credit card numbers
+
+Matches are grouped and redacted deterministically.
+
+---
+
+## Authentication & Authorization
+
+* NextAuth.js with JWT sessions
+* Google OAuth and email/password support
+* Passwords hashed with bcrypt
+* Role-based access control enforced server-side
+* Admin role stored in database (`role` field in User model)
+
+---
 
 ## User History & Analytics
 
-* Each authenticated user can view their own upload history
-* Upload metadata (filename, timestamp) is stored in the database
-* Admin users can view aggregate upload analytics across all users
+* Each authenticated user can view their upload history
+* Upload metadata stored in PostgreSQL:
 
-## Sensitive Words
+  * Filename
+  * Redacted count
+  * Timestamp
+* Admin users can view aggregate upload data across all users
 
-Default sensitive words are defined in:
+---
 
-```
-app/api/upload/route.ts
-```
+## Technologies Used
 
-They can be customized by editing the list in that file.
+* Next.js 14 (App Router)
+* NextAuth.js
+* Prisma ORM
+* PostgreSQL
+* TypeScript
+* Tailwind CSS
+* pdf-parse
+* mammoth
+
+---
 
 ## Deployment
 
@@ -121,20 +177,14 @@ They can be customized by editing the list in that file.
 
 1. Push repository to GitHub
 2. Import project into Vercel
-3. Add environment variables
+3. Configure environment variables
 4. Deploy
 
-## Technologies Used
-
-* Next.js 14 (App Router)
-* NextAuth.js
-* Prisma + PostgreSQL
-* TypeScript
-* Tailwind CSS
-* pdf-parse, mammoth
+---
 
 ## License
 
 MIT
 
-````
+```
+```
