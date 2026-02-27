@@ -51,7 +51,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Enforce 10MB limit
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { success: false, error: "File size exceeds 10MB limit." },
+        { status: 400 }
+      );
+    }
+
+    if (!file) {
+      return NextResponse.json(
+        { success: false, error: 'No file provided' },
+        { status: 400 }
+      );
+    }
+
     const text = await extractTextFromFile(file);
+    // Prevent extremely large extracted text from freezing engine
+    const MAX_TEXT_LENGTH = 500_000; // 500k characters
+
+    if (text.length > MAX_TEXT_LENGTH) {
+      return NextResponse.json(
+        { success: false, error: "Extracted text is too large to process." },
+        { status: 400 }
+      );
+    }
 
     if (!text || text.trim().length === 0) {
       return NextResponse.json(

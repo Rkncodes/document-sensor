@@ -1,29 +1,27 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import Layout from '@/components/Layout';
 import { CensorResult } from '@/lib/types';
 
 function ResultContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session } = useSession();
   const [result, setResult] = useState<CensorResult | null>(null);
 
   useEffect(() => {
-    const dataParam = searchParams.get('data');
-    if (dataParam) {
+    const stored = sessionStorage.getItem("redactionResult");
+    if (stored) {
       try {
-        const parsedData: CensorResult = JSON.parse(dataParam);
+        const parsedData: CensorResult = JSON.parse(stored);
         setResult(parsedData);
       } catch (error) {
-        console.error('Failed to parse result data:', error);
+        console.error("Failed to parse stored result:", error);
       }
     }
-  }, [searchParams]);
-
+  }, []);
   const highlightText = (text: string, words: string[], isCensored: boolean) => {
     if (words.length === 0) return text;
 
@@ -100,7 +98,7 @@ function ResultContent() {
               >
                 Upload Another
               </button>
-              
+
               <button
                 onClick={handleDownload}
                 className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"

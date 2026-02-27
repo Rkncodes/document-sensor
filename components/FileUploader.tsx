@@ -79,10 +79,11 @@ export default function FileUploader() {
       const result: UploadResponse = await response.json();
 
       if (result.success && result.data) {
-        const params = new URLSearchParams({
-          data: JSON.stringify(result.data),
-        });
-        router.push(`/result?${params.toString()}`);
+        sessionStorage.setItem(
+          "redactionResult",
+          JSON.stringify(result.data)
+        );
+        router.push("/result");
       } else {
         setError(result.error || 'Upload failed. Please try again.');
       }
@@ -100,11 +101,10 @@ export default function FileUploader() {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-3 border-dashed rounded-xl p-12 text-center transition-all ${
-            isDragging
+          className={`border-3 border-dashed rounded-xl p-12 text-center transition-all ${isDragging
               ? 'border-blue-500 bg-blue-50'
               : 'border-slate-300 bg-slate-50'
-          }`}
+            }`}
         >
           <div className="space-y-4">
             <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
